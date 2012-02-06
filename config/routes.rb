@@ -1,4 +1,6 @@
 Fantasynba::Application.routes.draw do
+  resources :box_score_entries
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
