@@ -118,6 +118,6 @@ end
 def lastDay
   n = DateTime.now
   date = Date.new(n.year, n.mon, n.mday)
-  date -= 1 if n.hour <= 12
+  date -= 1 if n.hour <= 18
   return date
 end

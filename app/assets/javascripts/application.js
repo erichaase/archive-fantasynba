@@ -53,8 +53,7 @@ function fillTable (oJsonData) {
 function appendHeader () {
   table += "    <tr>\n";
   table += "      <td class=\"h_player\">Name</td>\n";
-  table += "      <td class=\"h_player\">BS</td>\n";
-  table += "      <td class=\"h_player\">RW</td>\n";
+  table += "      <td class=\"h_player\">links</td>\n";
   table += "      <td class=\"h_stat\">MIN</td>\n";
   table += "      <td class=\"h_stat\">FG</td>\n";
   table += "      <td class=\"h_stat\">FT</td>\n";
@@ -82,8 +81,7 @@ function appendPlayer (bse) {
   prefix = "";
   table += "    <tr>\n";
   table += "      <td class=\"" + prefix + "player\"><a target=\"_blank\" href=\"http://espn.go.com/nba/player/gamelog/_/id/" + bse.pid_espn +  "/\">" + bse.fname + " " + bse.lname + "</a></td>\n";
-  table += "      <td class=\"" + prefix + "player\"><a target=\"_blank\" href=\"http://scores.espn.go.com/nba/boxscore?gameId=" + bse.gid_espn + "\">" + "bs" + "</a></td>\n";
-  table += "      <td class=\"" + prefix + "player\"><a target=\"_blank\" href=\"http://www.rotoworld.com/content/playersearch.aspx?searchname=" + bse.lname + ",%20" + bse.fname + "\">" + "rw" + "</a></td>\n";
+  table += "      <td class=\"" + prefix + "player\"><a target=\"_blank\" href=\"http://www.rotoworld.com/content/playersearch.aspx?searchname=" + bse.lname + ",%20" + bse.fname + "\">" + "rw" + "</a> | <a target=\"_blank\" href=\"http://scores.espn.go.com/nba/boxscore?gameId=" + bse.gid_espn + "\">" + "bs" + "</a></td>\n";
   table += "      <td class=\"" + prefix + "stat\">" + bse.min + "</td>\n";
   table += "      <td class=\"" + prefix + "stat\">" + bse.fgm + "-" + bse.fga + "</td>\n";
   table += "      <td class=\"" + prefix + "stat\">" + bse.ftm + "-" + bse.fta + "</td>\n";
