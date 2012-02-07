@@ -1,3 +1,31 @@
-// Place all the styles related to the home controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+body {
+  font-family      : verdana;
+  color            : #000000;
+  background-color : #FFFFFF;
+  margin           : 10px;
+}
+
+table { border-collapse : collapse; }
+
+td {
+  border     : 1px solid #000000;
+  padding    : 0px 5px 0px 5px;
+  text-align : center;
+}
+
+td.player, td.h_player { background-color : #99CCFF; }
+td.stat,   td.h_stat   { background-color : #CCFFFF; }
+td.rating, td.h_rating { background-color : #CCFFCC; }
+td.total,  td.h_total  { background-color : #FFFF99; }
+
+td.m_player, tr:hover td.player   { background-color: #77AADD; }
+td.m_stat,   tr:hover td.stat   { background-color: #AADDDD; }
+td.m_rating, tr:hover td.rating { background-color: #AADDAA; }
+td.m_total,  tr:hover td.total  { background-color: #DDDD77; }
+
+td.h_player, td.h_stat, td.h_rating, td.h_total { font-weight : bold; }
+
+a:link, a:visited, a:hover, a:active {
+  color           : #000000;
+  text-decoration : none;
+}
