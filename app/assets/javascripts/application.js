@@ -33,6 +33,7 @@ function requestData ( url ) {
 function fillTable (oJsonData) {
   // add error checking to determine if json data is valid
 
+// var table (local)
   table = "\n  <table>\n";
   appendHeader();
   counter = 0
@@ -51,9 +52,11 @@ function fillTable (oJsonData) {
 
 
 function appendHeader () {
+// return string instead of appending
   table += "    <tr>\n";
   table += "      <td class=\"h_player\">Name</td>\n";
   table += "      <td class=\"h_player\">links</td>\n";
+  table += "      <td class=\"h_stat\">STATUS</td>\n";
   table += "      <td class=\"h_stat\">MIN</td>\n";
   table += "      <td class=\"h_stat\">FG</td>\n";
   table += "      <td class=\"h_stat\">FT</td>\n";
@@ -78,10 +81,12 @@ function appendHeader () {
 }
 
 function appendPlayer (bse) {
+// return string instead of appending
   prefix = "";
   table += "    <tr>\n";
   table += "      <td class=\"" + prefix + "player\"><a target=\"_blank\" href=\"http://espn.go.com/nba/player/gamelog/_/id/" + bse.pid_espn +  "/\">" + bse.fname + " " + bse.lname + "</a></td>\n";
-  table += "      <td class=\"" + prefix + "player\"><a target=\"_blank\" href=\"http://www.rotoworld.com/content/playersearch.aspx?searchname=" + bse.lname + ",%20" + bse.fname + "\">" + "rw" + "</a> | <a target=\"_blank\" href=\"http://scores.espn.go.com/nba/boxscore?gameId=" + bse.gid_espn + "\">" + "bs" + "</a></td>\n";
+  table += "      <td class=\"" + prefix + "player\"><a target=\"_blank\" href=\"http://www.rotoworld.com/content/playersearch.aspx?searchname=" + bse.lname + ",%20" + bse.fname + "\">" + "rw" + "</a></td>\n";
+  table += "      <td class=\"" + prefix + "stat\">  <a target=\"_blank\" href=\"http://scores.espn.go.com/nba/boxscore?gameId=" + bse.gid_espn + "\">" + bse.bs_status + "</a></td>\n";
   table += "      <td class=\"" + prefix + "stat\">" + bse.min + "</td>\n";
   table += "      <td class=\"" + prefix + "stat\">" + bse.fgm + "-" + bse.fga + "</td>\n";
   table += "      <td class=\"" + prefix + "stat\">" + bse.ftm + "-" + bse.fta + "</td>\n";

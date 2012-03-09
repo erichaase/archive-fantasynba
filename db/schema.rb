@@ -10,15 +10,12 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120206225953) do
+ActiveRecord::Schema.define(:version => 20120306061116) do
 
   create_table "box_score_entries", :force => true do |t|
-    t.integer  "gid_espn"
-    t.date     "date"
     t.integer  "pid_espn"
     t.string   "fname"
     t.string   "lname"
-    t.string   "pos"
     t.integer  "min"
     t.integer  "fgm"
     t.integer  "fga"
@@ -27,7 +24,6 @@ ActiveRecord::Schema.define(:version => 20120206225953) do
     t.integer  "ftm"
     t.integer  "fta"
     t.integer  "oreb"
-    t.integer  "dreb"
     t.integer  "reb"
     t.integer  "ast"
     t.integer  "stl"
@@ -38,6 +34,21 @@ ActiveRecord::Schema.define(:version => 20120206225953) do
     t.integer  "pts"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "box_score_id"
+    t.string   "status"
   end
+
+  add_index "box_score_entries", ["box_score_id"], :name => "index_box_score_entries_on_box_score_id"
+  add_index "box_score_entries", ["pid_espn"], :name => "index_box_score_entries_on_pid_espn"
+
+  create_table "box_scores", :force => true do |t|
+    t.integer  "gid_espn"
+    t.string   "status"
+    t.date     "date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "box_scores", ["gid_espn"], :name => "index_box_scores_on_gid_espn", :unique => true
 
 end

@@ -1,67 +1,94 @@
-require 'collect'
+require 'common'
 
 ################################################################################
 
 class RatingsController < ApplicationController
   def index
-    #if params[:days]
-    #elsif params[:from] and params[:to]
-    #else
-    #end
-    players = []
-    BoxScoreEntry.where(:date => lastDay).each { |bse| players << Player.new(bse) }
-    players.sort! { |a,b| b.r_tot <=> a.r_tot }
-    render :json => players
+    log(:debug, __method__)
+    if params[:days]
+    elsif params[:from] and params[:to]
+    else
+      players = getPlayers(activeToday)
+      render :json => players
+    end
   end
 
   def now
-    players = []
-    date = lastDay
-    BoxScores.new(date).save
-    BoxScoreEntry.where(:date => date).each { |bse| players << Player.new(bse) }
-    players.sort! { |a,b| b.r_tot <=> a.r_tot }
+    log(:debug, __method__)
+    date = activeToday
+    BoxScore.sync(date)
+    players = getPlayers(date)
     render :json => players
   end
 
   def day
-    #players = []
-    #players.sort! { |a,b| b.r_tot <=> a.r_tot }
-    #render :json => players
+    log(:debug, __method__)
+    #params[:date]
   end
 
 end
 
 ################################################################################
 
+def getPlayers ( date )
+  raise ArgumentError, "'date' argument is not a Date object" if date.class != Date
+  log(:debug, __method__, "date = #{date}")
+
+  players = []
+  BoxScore.where(:date => date).each do |bs|
+    bs.box_score_entries.each do |bse|
+      players << Player.new(bs,bse) if bse.play?
+    end
+  end
+  players.sort! { |a,b| b.r_tot <=> a.r_tot }
+
+  return players
+end
+
 
 class Player
+
   attr_reader :r_tot
-  def initialize (bse)
-    @gid_espn   = bse.gid_espn
-    @date       = bse.date
-    @pid_espn   = bse.pid_espn
-    @fname      = bse.fname
-    @lname      = bse.lname
-    @pos        = bse.pos
-    @min        = bse.min
-    @fgm        = bse.fgm
-    @fga        = bse.fga
-    @tpm        = bse.tpm
-    @tpa        = bse.tpa
-    @ftm        = bse.ftm
-    @fta        = bse.fta
-    @oreb       = bse.oreb
-    @dreb       = bse.dreb
-    @reb        = bse.reb
-    @ast        = bse.ast
-    @stl        = bse.stl
-    @blk        = bse.blk
-    @to         = bse.to
-    @pf         = bse.pf
-    @plusminus  = bse.plusminus
-    @pts        = bse.pts
-    @created_at = bse.created_at
-    @updated_at = bse.updated_at
+
+  def initialize (bs,bse)
+    @gid_espn      = bs.gid_espn
+    @date          = bs.date
+    @bs_created_at = bs.created_at
+    @bs_updated_at = bs.updated_at
+
+    status = bs.status.split(",")
+    if bs.final?
+      @bs_status = 'final'
+    elsif status[2] =~ /&nbsp;/
+      @bs_status = status[1]
+    else
+      @bs_status = status[1,2].join(" (").concat(")")
+    end
+
+    @pid_espn       = bse.pid_espn
+    @fname          = bse.fname
+    @lname          = bse.lname
+    @min            = bse.min
+    @fgm            = bse.fgm
+    @fga            = bse.fga
+    @tpm            = bse.tpm
+    @tpa            = bse.tpa
+    @ftm            = bse.ftm
+    @fta            = bse.fta
+    @oreb           = bse.oreb
+    @reb            = bse.reb
+    @ast            = bse.ast
+    @stl            = bse.stl
+    @blk            = bse.blk
+    @to             = bse.to
+    @pf             = bse.pf
+    @plusminus      = bse.plusminus
+    @pts            = bse.pts
+    @box_score_id   = bse.box_score_id
+    @bse_status     = bse.status
+    @bse_created_at = bse.created_at
+    @bse_updated_at = bse.updated_at
+
     if @fga == 0
       @r_fgp = 0.0
     else
@@ -81,4 +108,5 @@ class Player
     @r_to  = (@to - 2.08) * -2.36111111111111
     @r_tot = @r_fgp + @r_ftp + @r_tpm + @r_pts + @r_reb + @r_ast + @r_stl + @r_blk + @r_to
   end
+
 end

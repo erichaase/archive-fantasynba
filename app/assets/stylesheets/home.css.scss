@@ -13,15 +13,15 @@ td {
   text-align : center;
 }
 
-td.player, td.h_player { background-color : #99CCFF; }
-td.stat,   td.h_stat   { background-color : #CCFFFF; }
-td.rating, td.h_rating { background-color : #CCFFCC; }
-td.total,  td.h_total  { background-color : #FFFF99; }
+td.player, td.h_player { background-color : #CFE2F3; }
+td.stat,   td.h_stat   { background-color : #D9EAD3; }
+td.rating, td.h_rating { background-color : #FFF2CC; }
+td.total,  td.h_total  { background-color : #F4CCCC; }
 
-td.m_player, tr:hover td.player   { background-color: #77AADD; }
-td.m_stat,   tr:hover td.stat   { background-color: #AADDDD; }
-td.m_rating, tr:hover td.rating { background-color: #AADDAA; }
-td.m_total,  tr:hover td.total  { background-color: #DDDD77; }
+td.m_player, tr:hover td.player { background-color: #AFC2D3; }
+td.m_stat,   tr:hover td.stat   { background-color: #B9CAB3; }
+td.m_rating, tr:hover td.rating { background-color: #DFD2AC; }
+td.m_total,  tr:hover td.total  { background-color: #D4ACAC; }
 
 td.h_player, td.h_stat, td.h_rating, td.h_total { font-weight : bold; }
 

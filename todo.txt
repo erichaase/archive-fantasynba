@@ -1,0 +1,4 @@
+highlight players
+add BoxScore 'date' index to schema ???
+print stack trace during log:error
+to_s() for before_save() calls

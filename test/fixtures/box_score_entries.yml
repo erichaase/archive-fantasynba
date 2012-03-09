@@ -1,12 +1,9 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
 one:
-  gid_espn: 1
-  date: 2012-02-06
   pid_espn: 1
   fname: MyString
   lname: MyString
-  pos: MyString
   min: 1
   fgm: 1
   fga: 1
@@ -15,7 +12,6 @@ one:
   ftm: 1
   fta: 1
   oreb: 1
-  dreb: 1
   reb: 1
   ast: 1
   stl: 1
@@ -24,14 +20,13 @@ one:
   pf: 1
   plusminus: 1
   pts: 1
+  box_score_id: 1
+  status: MyString
 
 two:
-  gid_espn: 1
-  date: 2012-02-06
   pid_espn: 1
   fname: MyString
   lname: MyString
-  pos: MyString
   min: 1
   fgm: 1
   fga: 1
@@ -40,7 +35,6 @@ two:
   ftm: 1
   fta: 1
   oreb: 1
-  dreb: 1
   reb: 1
   ast: 1
   stl: 1
@@ -49,3 +43,5 @@ two:
   pf: 1
   plusminus: 1
   pts: 1
+  box_score_id: 1
+  status: MyString
