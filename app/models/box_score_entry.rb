@@ -27,7 +27,7 @@ class BoxScoreEntry < ActiveRecord::Base
   end
 
   after_save do |bse|
-    log(:info, __method__, "saved bse: #{bse}")
+    log(:debug, __method__, "saved bse: #{bse}")
   end
 
   def play?

@@ -16,7 +16,7 @@ class BoxScore < ActiveRecord::Base
   end
 
   after_save do |bs|
-    log(:info,  __method__, "saved bs: #{bs}")
+    log(:debug,  __method__, "saved bs: #{bs}")
   end
 
   def final?
@@ -77,87 +77,87 @@ boxscore entries:
           log(:error,  __method__, "#{e.message}: #{bs.inspect}")
           next
         end
-      end
 
-      re_player = %r`<\s*a\s+href\s*=\s*"([^"]+)"\s*>\s*([^<]+)<[^>]+>\s*,\s*([^<]+)<[^<]+((<\s*td[^>]*>[^<]+<\s*/\s*td\s*>\s*)+)`
-      open(boxscoreURI(bs.gid_espn)).read.scan(re_player) do | href, name, pos, rest |
-        stats = rest.split(%r`\s*<\s*/\s*td\s*>\s*<\s*td[^>]*>\s*`)
-        if not stats.empty?
-          stats[0].sub!(%r`^\s*<\s*td[^>]*>\s*`,'')
-          stats[-1].sub!(%r`\s*<\s*/\s*td\s*>\s*$`,'')
-        end
+        re_player = %r`<\s*a\s+href\s*=\s*"([^"]+)"\s*>\s*([^<]+)<[^>]+>\s*,\s*([^<]+)<[^<]+((<\s*td[^>]*>[^<]+<\s*/\s*td\s*>\s*)+)`
+        open(boxscoreURI(bs.gid_espn)).read.scan(re_player) do | href, name, pos, rest |
+          stats = rest.split(%r`\s*<\s*/\s*td\s*>\s*<\s*td[^>]*>\s*`)
+          if not stats.empty?
+            stats[0].sub!(%r`^\s*<\s*td[^>]*>\s*`,'')
+            stats[-1].sub!(%r`\s*<\s*/\s*td\s*>\s*$`,'')
+          end
 
-        [href, name, pos].concat(stats).each do |x| x.strip!; x.downcase! end
+          [href, name, pos].concat(stats).each do |x| x.strip!; x.downcase! end
 
-        bse_attrs     = {}
-        p_attrs       = {}
-        p_attrs[:pos] = pos
-        bse_attrs[:pid_espn] = href.scan(%r`/id/(\d+)/`)[0][0].to_i
-        bse_attrs[:fname]    = name[/^\S+/]
-        bse_attrs[:lname]    = name[/\S+$/]
-
-        case stats.size
-        when 1
-          # "dnp coach's decision"
-          # "dnp personal reasons"
-          # "dnp sore left elbow"
-          # "dnp [reason]"
-          # "has not entered game"
-          bse_attrs[:status] = stats[0]
-        when 13..14
-          bse_attrs[:status]   = 'play'
-          bse_attrs[:min]      = stats[0].to_i
-          bse_attrs[:fgm]      = stats[1][/^\d+/].to_i
-          bse_attrs[:fga]      = stats[1][/\d+$/].to_i
-          bse_attrs[:tpm]      = stats[2][/^\d+/].to_i
-          bse_attrs[:tpa]      = stats[2][/\d+$/].to_i
-          bse_attrs[:ftm]      = stats[3][/^\d+/].to_i
-          bse_attrs[:fta]      = stats[3][/\d+$/].to_i
-          bse_attrs[:oreb]     = stats[4].to_i
+          bse_attrs     = {}
+          p_attrs       = {}
+          p_attrs[:pos] = pos
+          bse_attrs[:pid_espn] = href.scan(%r`/id/(\d+)/`)[0][0].to_i
+          bse_attrs[:fname]    = name[/^\S+/]
+          bse_attrs[:lname]    = name[/\S+$/]
 
           case stats.size
-          when 14
-            bse_attrs[:reb]       = stats[6].to_i
-            bse_attrs[:ast]       = stats[7].to_i
-            bse_attrs[:stl]       = stats[8].to_i
-            bse_attrs[:blk]       = stats[9].to_i
-            bse_attrs[:to]        = stats[10].to_i
-            bse_attrs[:pf]        = stats[11].to_i
-            bse_attrs[:plusminus] = stats[12].to_i
-            bse_attrs[:pts]       = stats[13].to_i
-          when 13
-            bse_attrs[:reb]       = stats[5].to_i
-            bse_attrs[:ast]       = stats[6].to_i
-            bse_attrs[:stl]       = stats[7].to_i
-            bse_attrs[:blk]       = stats[8].to_i
-            bse_attrs[:to]        = stats[9].to_i
-            bse_attrs[:pf]        = stats[10].to_i
-            bse_attrs[:plusminus] = stats[11].to_i
-            bse_attrs[:pts]       = stats[12].to_i
-          end
-        else
-          log(:warn, __method__, "stats.size = #{stats.size}, should be 1|13|14: #{stats.inspect}")
-          next
-        end
+          when 1
+            # "dnp coach's decision"
+            # "dnp personal reasons"
+            # "dnp sore left elbow"
+            # "dnp [reason]"
+            # "has not entered game"
+            bse_attrs[:status] = stats[0]
+          when 13..14
+            bse_attrs[:status]   = 'play'
+            bse_attrs[:min]      = stats[0].to_i
+            bse_attrs[:fgm]      = stats[1][/^\d+/].to_i
+            bse_attrs[:fga]      = stats[1][/\d+$/].to_i
+            bse_attrs[:tpm]      = stats[2][/^\d+/].to_i
+            bse_attrs[:tpa]      = stats[2][/\d+$/].to_i
+            bse_attrs[:ftm]      = stats[3][/^\d+/].to_i
+            bse_attrs[:fta]      = stats[3][/\d+$/].to_i
+            bse_attrs[:oreb]     = stats[4].to_i
 
-        bse = bs.box_score_entries.where(:pid_espn => bse_attrs[:pid_espn]).first
-        begin
-          if bse
-            bse.update_attributes!(bse_attrs)
+            case stats.size
+            when 14
+              bse_attrs[:reb]       = stats[6].to_i
+              bse_attrs[:ast]       = stats[7].to_i
+              bse_attrs[:stl]       = stats[8].to_i
+              bse_attrs[:blk]       = stats[9].to_i
+              bse_attrs[:to]        = stats[10].to_i
+              bse_attrs[:pf]        = stats[11].to_i
+              bse_attrs[:plusminus] = stats[12].to_i
+              bse_attrs[:pts]       = stats[13].to_i
+            when 13
+              bse_attrs[:reb]       = stats[5].to_i
+              bse_attrs[:ast]       = stats[6].to_i
+              bse_attrs[:stl]       = stats[7].to_i
+              bse_attrs[:blk]       = stats[8].to_i
+              bse_attrs[:to]        = stats[9].to_i
+              bse_attrs[:pf]        = stats[10].to_i
+              bse_attrs[:plusminus] = stats[11].to_i
+              bse_attrs[:pts]       = stats[12].to_i
+            end
           else
-            bse = bs.box_score_entries.create!(bse_attrs)
+            log(:warn, __method__, "stats.size = #{stats.size}, should be 1|13|14: #{name}, #{stats.inspect}")
+            next
           end
-        rescue ActiveRecord::RecordInvalid => e
-          log(:error,  __method__, "#{e.message}: #{bse_attrs.inspect}")
-          next
+
+          bse = bs.box_score_entries.where(:pid_espn => bse_attrs[:pid_espn]).first
+          begin
+            if bse
+              bse.update_attributes!(bse_attrs)
+            else
+              bse = bs.box_score_entries.create!(bse_attrs)
+            end
+          rescue ActiveRecord::RecordInvalid => e
+            log(:error,  __method__, "#{e.message}: #{bse_attrs.inspect}")
+            next
+          end
+
+          # add BoxScoreEntry to Player model
+
         end
 
-        # add BoxScoreEntry to Player model
+        log(:warn, __method__, "the following BoxScore has less than 20 BoxScoreEntries: #{bs.inspect}") if bs.status.downcase =~ /^final/ and bs.box_score_entries.size < 20
 
       end
-
-      log(:warn, __method__, "the following BoxScore has less than 20 BoxScoreEntries: #{bs.inspect}") if bs.status.downcase =~ /^final/ and bs.box_score_entries.size < 20
-
     end
   end
 end
